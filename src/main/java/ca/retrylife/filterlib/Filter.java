@@ -17,6 +17,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Filter is a utility class for easily sorting and selecting a single object or
+ * a group of objects based on simple rules.
+ * 
+ * @param <T> Common type of all objects being operated on
+ */
 public class Filter<T> {
 
     // Mapping of all objects to their scores
@@ -25,6 +31,11 @@ public class Filter<T> {
     // Ordered list of objects by their score
     private List<T> orderedObjects = null;
 
+    /**
+     * Create a Filter from a list of items
+     * 
+     * @param items Items
+     */
     public Filter(List<T> items) {
 
         // Handle mapping all items
@@ -36,6 +47,11 @@ public class Filter<T> {
         this.orderedObjects = null;
     }
 
+    /**
+     * Create a Filter from an array of items
+     * 
+     * @param items Items
+     */
     public Filter(T[] items) {
 
         // Handle mapping all items
@@ -47,10 +63,28 @@ public class Filter<T> {
         this.orderedObjects = null;
     }
 
+    /**
+     * Assign a score for each item
+     * 
+     * @param fun Scoring function
+     * 
+     *            <pre>
+     * (T item) -> double
+     *            </pre>
+     */
     public void score(Function<T, Double> fun) {
         this.score((T item, Double score) -> fun.apply(item));
     }
 
+    /**
+     * Assign a score for each item, based on it's previous score
+     * 
+     * @param fun Scoring function
+     * 
+     *            <pre>
+     * (T item, double previousScore) -> double
+     *            </pre>
+     */
     public void score(BiFunction<T, Double, Double> fun) {
 
         // Handle every item that is not removed
@@ -67,16 +101,39 @@ public class Filter<T> {
         this.orderedObjects = null;
     }
 
+    /**
+     * Remove any marked items
+     * 
+     * @param fun Function that returns true when an item should be removed
+     * 
+     *            <pre>
+     * (T item) -> boolean
+     *            </pre>
+     */
     public void remove(Function<T, Boolean> fun) {
         this.remove((T item, Double score) -> fun.apply(item));
     }
 
+    /**
+     * Remove any marked items based on their score
+     * 
+     * @param fun Function that returns true when an item should be removed
+     * 
+     *            <pre>
+     * (T item, double score) -> boolean
+     *            </pre>
+     */
     public void remove(BiFunction<T, Double, Boolean> fun) {
 
         // Setting a score to NULL will remove it. This just uses that logic
         this.score((T item, Double score) -> fun.apply(item, score) ? null : score);
     }
 
+    /**
+     * Remove a single item
+     * 
+     * @param singleItem Item
+     */
     public void remove(T singleItem) {
         this.objectScores.put(singleItem, null);
 
@@ -84,16 +141,37 @@ public class Filter<T> {
         this.orderedObjects = null;
     }
 
+    /**
+     * Keep only marked items, remove the rest
+     * 
+     * @param fun Function that returns true when an item should be kept
+     * 
+     *            <pre>
+     * (T item) -> boolean
+     *            </pre>
+     */
     public void keepOnly(Function<T, Boolean> fun) {
         this.keepOnly((T item, Double score) -> fun.apply(item));
     }
 
+    /**
+     * Keep any marked items based on their score, remove the rest
+     * 
+     * @param fun Function that returns true when an item should be kept
+     * 
+     *            <pre>
+     * (T item, double score) -> boolean
+     *            </pre>
+     */
     public void keepOnly(BiFunction<T, Double, Boolean> fun) {
 
         // This function is the inverse of remove(). Just use that logic
         this.remove((T item, Double score) -> !fun.apply(item, score));
     }
 
+    /**
+     * Resets all scores, and re-adds removed items
+     */
     public void reset() {
 
         // Set all scores to 0
@@ -103,6 +181,11 @@ public class Filter<T> {
         this.orderedObjects = null;
     }
 
+    /**
+     * Get the number of items that have not been removed
+     * 
+     * @return Number of items
+     */
     public int getCount() {
 
         int count = 0;
@@ -116,14 +199,37 @@ public class Filter<T> {
         return count;
     }
 
+    /**
+     * Get if the Filter has no items left in it
+     * 
+     * @return Is empty?
+     */
     public boolean isEmpty() {
         return getCount() == 0;
     }
 
+    /**
+     * Iterate over each item
+     * 
+     * @param consumer Callback for every item
+     * 
+     *                 <pre>
+     * (T item) -> void
+     *                 </pre>
+     */
     public void forEach(Consumer<T> consumer) {
         this.forEach((T item, Double score) -> consumer.accept(item));
     }
 
+    /**
+     * Iterate over each item, along with it's score
+     * 
+     * @param consumer Callback for every item
+     * 
+     *                 <pre>
+     * (T item, double score) -> void
+     *                 </pre>
+     */
     public void forEach(BiConsumer<T, Double> consumer) {
         this.objectScores.forEach((T item, Double score) -> {
             if (item != null) {
@@ -132,6 +238,15 @@ public class Filter<T> {
         });
     }
 
+    /**
+     * Iterate over each item that has been removed from the Filter
+     * 
+     * @param consumer Callback for every item
+     * 
+     *                 <pre>
+     * (T item) -> void
+     *                 </pre>
+     */
     public void forEachRemoved(Consumer<T> consumer) {
         this.objectScores.forEach((T item, Double score) -> {
             if (item == null) {
@@ -140,6 +255,11 @@ public class Filter<T> {
         });
     }
 
+    /**
+     * Get the best item, or null if none matches that criteria
+     * 
+     * @return The item with the highest score
+     */
     public @Nullable T getBest() {
         // Get the ordered list
         List<T> ordered = this.getOrdered();
@@ -152,6 +272,15 @@ public class Filter<T> {
         }
     }
 
+    /**
+     * Pass the best item (item with the highest score) to a function
+     * 
+     * @param consumer Function
+     * 
+     *                 <pre>
+     * (T item) -> void
+     *                 </pre>
+     */
     public void withBest(Consumer<T> consumer) {
 
         // Get the best item
@@ -163,6 +292,11 @@ public class Filter<T> {
         }
     }
 
+    /**
+     * Get the worst item, or null if none matches that criteria
+     * 
+     * @return The item with the lowest score (not including removed items)
+     */
     public @Nullable T getWorst() {
         // Get the ordered list
         List<T> ordered = this.getOrdered();
@@ -175,6 +309,15 @@ public class Filter<T> {
         }
     }
 
+    /**
+     * Pass the worst item (item with the lowest score) to a function
+     * 
+     * @param consumer Function
+     * 
+     *                 <pre>
+     * (T item) -> void
+     *                 </pre>
+     */
     public void withWorst(Consumer<T> consumer) {
 
         // Get the worst item
@@ -186,6 +329,13 @@ public class Filter<T> {
         }
     }
 
+    /**
+     * Get an {@link ImmutableList} of items that have a score greater than the
+     * threshold
+     * 
+     * @param threshold Threshold value
+     * @return List of items above threshold
+     */
     public ImmutableList<T> getAboveThreshold(double threshold) {
 
         List<T> output = new ArrayList<T>();
@@ -195,10 +345,30 @@ public class Filter<T> {
         return ImmutableList.copyOf(output);
     }
 
+    /**
+     * Iterate over each item with a score greater than the threshold
+     * 
+     * @param threshold Threshold value
+     * @param consumer  Function
+     * 
+     *                  <pre>
+     * (T item) -> void
+     *                  </pre>
+     */
     public void forEachAboveThreshold(double threshold, Consumer<T> consumer) {
         this.forEachAboveThreshold(threshold, (T item, Double score) -> consumer.accept(item));
     }
 
+    /**
+     * Iterate over each item with a score greater than the threshold
+     * 
+     * @param threshold Threshold value
+     * @param consumer  Function
+     * 
+     *                  <pre>
+     * (T item, double score) -> void
+     *                  </pre>
+     */
     public void forEachAboveThreshold(double threshold, BiConsumer<T, Double> consumer) {
         this.forEach((T item, Double score) -> {
             if (score > threshold) {
@@ -207,6 +377,13 @@ public class Filter<T> {
         });
     }
 
+    /**
+     * Get an {@link ImmutableList} of items that have a score less than the
+     * threshold
+     * 
+     * @param threshold Threshold value
+     * @return List of items below threshold
+     */
     public ImmutableList<T> getBelowThreshold(double threshold) {
 
         List<T> output = new ArrayList<T>();
@@ -217,10 +394,30 @@ public class Filter<T> {
 
     }
 
+    /**
+     * Iterate over each item with a score less than the threshold
+     * 
+     * @param threshold Threshold value
+     * @param consumer  Function
+     * 
+     *                  <pre>
+     * (T item) -> void
+     *                  </pre>
+     */
     public void forEachBelowThreshold(double threshold, Consumer<T> consumer) {
         this.forEachBelowThreshold(threshold, (T item, Double score) -> consumer.accept(item));
     }
 
+    /**
+     * Iterate over each item with a score less than the threshold
+     * 
+     * @param threshold Threshold value
+     * @param consumer  Function
+     * 
+     *                  <pre>
+     * (T item, double score) -> void
+     *                  </pre>
+     */
     public void forEachBelowThreshold(double threshold, BiConsumer<T, Double> consumer) {
         this.forEach((T item, Double score) -> {
             if (score < threshold) {
@@ -229,6 +426,11 @@ public class Filter<T> {
         });
     }
 
+    /**
+     * Get an ordered {@link ImmutableList} of all items, sorted by score
+     * 
+     * @return Ordered list
+     */
     public ImmutableList<T> getOrdered() {
 
         // If there is not already a cached ordered list, create it
@@ -259,6 +461,11 @@ public class Filter<T> {
         return ImmutableList.copyOf(this.orderedObjects);
     }
 
+    /**
+     * Get an {@link ImmutableList} of all remaining items
+     * 
+     * @return Remaining items
+     */
     public ImmutableList<T> getRemaining() {
         List<T> output = new ArrayList<T>();
 
@@ -267,6 +474,11 @@ public class Filter<T> {
         return ImmutableList.copyOf(output);
     }
 
+    /**
+     * Get an {@link ImmutableList} of all removed items
+     * 
+     * @return Removed items
+     */
     public ImmutableList<T> getRemoved() {
         List<T> output = new ArrayList<T>();
 
