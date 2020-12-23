@@ -232,7 +232,7 @@ public class Filter<T> {
      */
     public void forEach(BiConsumer<T, Double> consumer) {
         this.objectScores.forEach((T item, Double score) -> {
-            if (item != null) {
+            if (score != null) {
                 consumer.accept(item, score);
             }
         });
@@ -444,7 +444,7 @@ public class Filter<T> {
             Collections.sort(entryList, new Comparator<Entry<T, Double>>() {
                 @Override
                 public int compare(Entry<T, Double> obj1, Entry<T, Double> obj2) {
-                    return obj2.getValue().compareTo(obj2.getValue());
+                    return obj2.getValue().compareTo(obj1.getValue());
                 }
             });
 
