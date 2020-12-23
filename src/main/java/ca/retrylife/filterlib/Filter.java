@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 public class Filter<T> {
 
     // Mapping of all objects to their scores
-    private HashMap<T, @Nullable Double> objectScores = new HashMap<>();
+    private HashMap<T, Double> objectScores = new HashMap<>();
 
     // Ordered list of objects by their score
     private List<T> orderedObjects = null;
