@@ -69,7 +69,7 @@ public class Filter<T> {
      * @param fun Scoring function
      * 
      *            <pre>
-     * (T item) -> double
+     * (T item) -&gt; double
      *            </pre>
      */
     public void score(Function<T, Double> fun) {
@@ -82,7 +82,7 @@ public class Filter<T> {
      * @param fun Scoring function
      * 
      *            <pre>
-     * (T item, double previousScore) -> double
+     * (T item, double previousScore) -&gt; double
      *            </pre>
      */
     public void score(BiFunction<T, Double, Double> fun) {
@@ -107,7 +107,7 @@ public class Filter<T> {
      * @param fun Function that returns true when an item should be removed
      * 
      *            <pre>
-     * (T item) -> boolean
+     * (T item) -&gt; boolean
      *            </pre>
      */
     public void remove(Function<T, Boolean> fun) {
@@ -120,7 +120,7 @@ public class Filter<T> {
      * @param fun Function that returns true when an item should be removed
      * 
      *            <pre>
-     * (T item, double score) -> boolean
+     * (T item, double score) -&gt; boolean
      *            </pre>
      */
     public void remove(BiFunction<T, Double, Boolean> fun) {
@@ -147,7 +147,7 @@ public class Filter<T> {
      * @param fun Function that returns true when an item should be kept
      * 
      *            <pre>
-     * (T item) -> boolean
+     * (T item) -&gt; boolean
      *            </pre>
      */
     public void keepOnly(Function<T, Boolean> fun) {
@@ -160,7 +160,7 @@ public class Filter<T> {
      * @param fun Function that returns true when an item should be kept
      * 
      *            <pre>
-     * (T item, double score) -> boolean
+     * (T item, double score) -&gt; boolean
      *            </pre>
      */
     public void keepOnly(BiFunction<T, Double, Boolean> fun) {
@@ -214,7 +214,7 @@ public class Filter<T> {
      * @param consumer Callback for every item
      * 
      *                 <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                 </pre>
      */
     public void forEach(Consumer<T> consumer) {
@@ -227,7 +227,7 @@ public class Filter<T> {
      * @param consumer Callback for every item
      * 
      *                 <pre>
-     * (T item, double score) -> void
+     * (T item, double score) -&gt; void
      *                 </pre>
      */
     public void forEach(BiConsumer<T, Double> consumer) {
@@ -244,7 +244,7 @@ public class Filter<T> {
      * @param consumer Callback for every item
      * 
      *                 <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                 </pre>
      */
     public void forEachRemoved(Consumer<T> consumer) {
@@ -278,7 +278,7 @@ public class Filter<T> {
      * @param consumer Function
      * 
      *                 <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                 </pre>
      */
     public void withBest(Consumer<T> consumer) {
@@ -315,7 +315,7 @@ public class Filter<T> {
      * @param consumer Function
      * 
      *                 <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                 </pre>
      */
     public void withWorst(Consumer<T> consumer) {
@@ -352,7 +352,7 @@ public class Filter<T> {
      * @param consumer  Function
      * 
      *                  <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                  </pre>
      */
     public void forEachAboveThreshold(double threshold, Consumer<T> consumer) {
@@ -366,7 +366,7 @@ public class Filter<T> {
      * @param consumer  Function
      * 
      *                  <pre>
-     * (T item, double score) -> void
+     * (T item, double score) -&gt; void
      *                  </pre>
      */
     public void forEachAboveThreshold(double threshold, BiConsumer<T, Double> consumer) {
@@ -401,7 +401,7 @@ public class Filter<T> {
      * @param consumer  Function
      * 
      *                  <pre>
-     * (T item) -> void
+     * (T item) -&gt; void
      *                  </pre>
      */
     public void forEachBelowThreshold(double threshold, Consumer<T> consumer) {
@@ -415,7 +415,7 @@ public class Filter<T> {
      * @param consumer  Function
      * 
      *                  <pre>
-     * (T item, double score) -> void
+     * (T item, double score) -&gt; void
      *                  </pre>
      */
     public void forEachBelowThreshold(double threshold, BiConsumer<T, Double> consumer) {

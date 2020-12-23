@@ -9,6 +9,8 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
+
+    id "ca.retrylife.gradle.sensibledefaults" version "1.0.4"
 }
 
 repositories {
@@ -27,3 +29,12 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
 }
+
+sensible {
+    javadoc {
+        enabled true
+    }
+}
+
+// Add an external javadoc
+project.sensibleJavadoc.options.addStringOption('https://guava.dev/releases/18.0/api/docs/')
